@@ -5,6 +5,13 @@ const todoListUI = document.getElementById('todo-list');
 const viewTitle = document.getElementById('current-view-title');
 const projectListUI = document.getElementById('project-list');
 
+//Sanitize innerHTML from XSS
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 //Tasks
 export function renderTodos(currentProject) {
     todoListUI.innerHTML = ''; 
@@ -28,7 +35,7 @@ export function renderTodos(currentProject) {
                        ${task.completed ? 'checked' : ''} 
                        data-index="${index}" 
                        class="todo-checkbox">
-                <span>${task.title}</span>
+                <span class="task-text"></span>
             </div>
             <button class="delete-task-btn" data-index="${index}">×</button>
         `;
@@ -38,7 +45,7 @@ export function renderTodos(currentProject) {
     });
 }
 
-// --- RENDER SIDEBAR ---
+//Sidebar
 export function renderSidebar() {
     projectListUI.innerHTML = ''; 
 
@@ -49,23 +56,22 @@ export function renderSidebar() {
         projectContainer.className = 'project-nav-group';
 
         const tasks = projects[projectName] || [];
-        const taskCount = tasks.length; // Get the count
-
-        // 1. Updated Header with the Count Bubble
+        const taskCount = tasks.length;
+        const safeProjectName = escapeHTML(projectName);
         const projectHeader = `
             <div class="project-header">
                 <div class="project-info">
-                    <span class="project-item bold-text">${projectName}</span>
+                    <span class="project-item bold-text">${safeProjectName}</span>
                     <span class="task-count">${taskCount}</span>
                 </div>
-                <button class="delete-project-btn" data-project="${projectName}">×</button>
+                <button class="delete-project-btn" data-project="${safeProjectName}">×</button>
             </div>
         `;
 
-        // 2. Sub-Tree (Only show if there are tasks)
         let taskSubTree = '<ul class="sub-task-list">';
         tasks.forEach(task => {
-            taskSubTree += `<li class="sub-task-item">${task.title}</li>`;
+            const safeTaskTitle = escapeHTML(task.title);
+            taskSubTree += `<li class="sub-task-item">${safeTaskTitle}</li>`;
         });
         taskSubTree += '</ul>';
 

@@ -22,7 +22,7 @@ const elements = {
 
 //Dark mode
 const init = () => {
-    const theme = ui.getStoredTheme();
+    const theme = UI.theme.getStoredTheme();
     document.documentElement.setAttribute('data-theme', theme);
     UI.theme.updateButton(elements.themeToggle, theme);
     renderSidebar();
@@ -34,7 +34,7 @@ elements.themeToggle.addEventListener('click', () => {
     const newTheme = activeTheme === 'light' ? 'dark' : 'light';
     
     document.documentElement.setAttribute('data-theme', newTheme);
-    ui.saveTheme(newTheme);
+    UI.theme.save(newTheme);
     UI.theme.updateButton(elements.themeToggle, newTheme);
 });
 
