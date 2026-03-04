@@ -39,7 +39,6 @@ export function renderTodos(currentProject) {
             </div>
             <button class="delete-task-btn" data-index="${index}">×</button>
         `;
-        //Prevent XSS while using innerHTML:
         li.querySelector('.task-text').textContent = task.title;
         todoListUI.appendChild(li);
     });

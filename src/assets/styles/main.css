@@ -5,10 +5,11 @@
     --card-bg: #242526;
     --border-color: #3e4042;
     --accent-color: #4da3ff;
+    --input-bg: #3a3b3c;
 }
 
-[data-theme='dark'] {
-    --bg-main: #f0f2f5;
+[data-theme='light'] {
+    --bg-main: #dadee4;
     --bg-sidebar: #f6f6f6;
     --text-color: #333;
     --card-bg: #ffffff;
@@ -19,6 +20,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 body {
@@ -49,7 +51,7 @@ body, html {
     margin-bottom: 25px;
     display: block;
     text-decoration: none;
-    color: #333;
+    color: var(--text-color);
 }
 
 .time-filters {
