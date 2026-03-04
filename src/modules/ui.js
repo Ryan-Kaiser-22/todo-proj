@@ -1,9 +1,4 @@
 
-// src/modules/ui.js
-
-/**
- * Handles the visibility and resetting of the "New Project" input area.
- */
 export const projectInput = {
     open(showBtn, inputGroup, inputField) {
         showBtn.style.display = 'none';
@@ -18,11 +13,20 @@ export const projectInput = {
     }
 };
 
-/**
- * Handles theme-specific UI updates.
- */
 export const theme = {
+    getStored() {
+        return localStorage.getItem('theme') || 'dark';
+    },
+
+    save(currentTheme) {
+        localStorage.setItem('theme', currentTheme);
+    },
+
     updateButton(button, currentTheme) {
         button.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+    },
+
+    apply(currentTheme) {
+        document.body.className = currentTheme; 
     }
 };

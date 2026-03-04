@@ -3,7 +3,7 @@ import { renderTodos, renderSidebar } from './modules/dom';
 import * as Logic from './modules/logic';
 import * as UI from './modules/ui';
 
-// --- STATE TRACKING ---
+//Default state 
 let currentProject = 'Inbox';
 
 const elements = {
@@ -20,28 +20,25 @@ const elements = {
     clearCompletedBtn: document.getElementById('clear-completed-btn'),
 };
 
-// --- INITIALIZATION ---
+//Dark mode
 const init = () => {
-    // Set theme
-    const theme = Logic.getStoredTheme();
+    const theme = ui.getStoredTheme();
     document.documentElement.setAttribute('data-theme', theme);
     UI.theme.updateButton(elements.themeToggle, theme);
     renderSidebar();
     renderTodos(currentProject);
 };
 
-// --- THEME LOGIC ---
 elements.themeToggle.addEventListener('click', () => {
     const activeTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = activeTheme === 'light' ? 'dark' : 'light';
     
     document.documentElement.setAttribute('data-theme', newTheme);
-    Logic.saveTheme(newTheme);
+    ui.saveTheme(newTheme);
     UI.theme.updateButton(elements.themeToggle, newTheme);
 });
 
-// --- PROJECT EVENT LISTENERS ---
-
+//Listeners
 elements.showBtn.addEventListener('click', () => {
     UI.projectInput.open(elements.showBtn, elements.inputGroup, elements.projectNameInput);
 });
@@ -60,16 +57,14 @@ elements.confirmProjectBtn.addEventListener('click', () => {
     }
 });
 
-// --- SIDEBAR ACTIONS (Switching & Deleting) ---
 elements.sidebar.addEventListener('click', (e) => {
 
     if (e.target.matches('.nav-link, .project-item')) {
         currentProject = e.target.textContent;
         renderTodos(currentProject);
     }
-
+    //Clicking on a task will bring up that project
     if (e.target.classList.contains('sub-task-item')) {
-        // This finds the parent container and grabs the project name from the header
         const projectHeader = e.target.closest('.project-nav-group').querySelector('.project-item');
         currentProject = projectHeader.textContent;
         renderTodos(currentProject);
@@ -85,8 +80,6 @@ elements.sidebar.addEventListener('click', (e) => {
     }
 });
 
-// --- TASK ACTIONS (Adding, Toggling, Deleting) ---
-
 elements.todoForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const taskTitle = elements.todoInput.value.trim();
@@ -94,7 +87,7 @@ elements.todoForm.addEventListener('submit', (e) => {
         Logic.addTaskToProject(currentProject, taskTitle);
         elements.todoInput.value = '';
         renderTodos(currentProject);
-        renderSidebar(); // updating count bubble
+        renderSidebar(); 
     }
 });
 
@@ -110,14 +103,14 @@ elements.todoListUI.addEventListener('click', (e) => {
     if (e.target.classList.contains('delete-task-btn')) {
         Logic.deleteTask(currentProject, index);
         renderTodos(currentProject);
-        renderSidebar(); // update count bubble
+        renderSidebar(); 
     }
 });
 
 elements.clearCompletedBtn.addEventListener('click', () => {
     Logic.clearCompletedTasks(currentProject);
     renderTodos(currentProject);
-    renderSidebar(); // Update the count bubbles in the sidebar!
+    renderSidebar();
 });
 
 init();

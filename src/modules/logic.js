@@ -70,12 +70,3 @@ export function deleteProject(projectName) {
     }
     return false;
 }
-
-//Dark mode
-export function getStoredTheme() {
-    return localStorage.getItem('theme') || 'dark';
-}
-
-export function saveTheme(theme) {
-    localStorage.setItem('theme', theme);
-}
