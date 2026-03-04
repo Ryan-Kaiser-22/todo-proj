@@ -1,23 +1,17 @@
-/**
- * logic.js
- * Handles data structures, state management, and persistence.
- */
-
+// localStorage
 const STORAGE_KEY = 'todo_app_data';
 
-// check if data exists in localStorage. If not, provide the default starting projects.
 export let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
     'Inbox': [],
     'Work': [{ title: 'Setup Webpack', completed: true }],
     'Personal': []
 };
 
-// --- PERSISTENCE ---
 export function saveToLocalStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
 }
 
-// --- TASK LOGIC ---
+//Tasks
 export const createTask = (title, completed = false) => ({ 
     title, 
     completed,
@@ -42,6 +36,22 @@ export function toggleTaskStatus(projectName, taskIndex) {
     }
 }
 
+export function deleteTask(projectName, taskIndex) {
+    if (projects[projectName]) {
+        projects[projectName].splice(taskIndex, 1); 
+        saveToLocalStorage();
+        return true;
+    }
+    return false;
+}
+
+export function clearCompletedTasks(projectName) {
+    if (!projects[projectName]) return;
+    projects[projectName] = projects[projectName].filter(task => !task.completed);
+    saveToLocalStorage();
+}
+
+//Projects
 export function addProject(name) {
     const trimmedName = name.trim();
     if (trimmedName && !projects[trimmedName]) {
@@ -61,24 +71,7 @@ export function deleteProject(projectName) {
     return false;
 }
 
-export function deleteTask(projectName, taskIndex) {
-    if (projects[projectName]) {
-        projects[projectName].splice(taskIndex, 1); // Remove 1 item at the given index
-        saveToLocalStorage();
-        return true;
-    }
-    return false;
-}
-
-export function clearCompletedTasks(projectName) {
-    if (!projects[projectName]) return;
-
-    // Filter the array to keep only tasks that are NOT completed
-    projects[projectName] = projects[projectName].filter(task => !task.completed);
-    
-    saveToLocalStorage();
-}
-
+//Dark mode
 export function getStoredTheme() {
     return localStorage.getItem('theme') || 'dark';
 }
