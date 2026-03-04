@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Todo App</title>
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark'; // Bright Light! I am a mogwai. 
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <nav class="nav-group">
+                <a href="#" class="nav-link inbox-link">Inbox</a>
+            </nav>
+
+            <nav class="nav-group time-filters">
+                <a href="#" class="nav-link">Today</a>
+                <a href="#" class="nav-link">Upcoming</a>
+                <a href="#" class="nav-link">Anytime</a>
+                <a href="#" class="nav-link">Someday</a>
+            </nav>
+
+            <div class="projects-section">
+                <h3>Projects</h3>
+                <ul id="project-list"></ul>
+                
+                <div id="new-project-container">
+                    <button id="show-add-project">+ New Project</button>
+                    <div id="project-input-group" style="display: none;">
+                        <input type="text" id="new-project-name" placeholder="Project Name...">
+                        <button id="confirm-add-project">Add</button>
+                        <button id="cancel-add-project">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="clear-completed-btn" class="secondary-btn">Clear Completed</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="theme-toggle-container">
+                <button id="theme-toggle">🌙 Dark Mode</button>
+            </div>
+            <header class="content-header">
+                <h1 id="current-view-title">Inbox</h1>
+            </header>
+
+            <section class="todo-form-container">
+                <form id="todo-form">
+                    <input type="text" id="todo-input" placeholder="What needs to be done?" required>
+                    <button type="submit">Add Task</button>
+                </form>
+            </section>
+
+            <section class="todo-display">
+                <ul id="todo-list">
+                    </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
