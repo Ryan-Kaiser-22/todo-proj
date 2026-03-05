@@ -227,8 +227,61 @@ body, html {
     transition: opacity 0.2s;
 }
 
-.project-item-container:hover .delete-project-btn {
+.project-header:hover .delete-project-btn {
     opacity: 1;
+}
+
+#todo-form {
+    display: flex;
+    gap: 10px;       
+    align-items: center;
+    width: 100%;
+}
+
+#todo-input, 
+#todo-date, 
+#todo-form button {
+    height: 42px;  
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border: 1px solid #3e4042;
+}
+
+#todo-input {
+    flex-grow: 1;
+    background-color: #242526; 
+    color: #e4e6eb;
+}
+
+#todo-date {
+    background-color: #242526;
+    color: #e4e6eb;
+    width: auto; 
+}
+
+#todo-form button, #confirm-add-project, #cancel-add-project {
+    background-color: #4da3ff; 
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    white-space: nowrap; 
+}
+
+#todo-form button:hover {
+    background-color: #3b8ceb; 
+}
+
+#todo-form button:active {
+    transform: scale(0.98); 
+}
+
+#confirm-add-project, #cancel-add-project {
+    padding: 4px;
+    border-radius: 3px;
 }
 
 .main-content {
@@ -243,6 +296,7 @@ body, html {
 #current-view-title {
     color: var(--text-color);
     transition: color 0.3s ease;
+    margin-bottom: 20px;
 }
 
 .todo-form-container {
@@ -262,17 +316,43 @@ body, html {
 }
 
 .todo-display {
-    background: var(--card-bg); 
+    background: #242526; 
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px #007bff;
 }
 
 .todo-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #eee;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.todo-main-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1; 
+}
+
+.todo-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+
+.task-date {
+    font-size: 0.8rem;
+    color: #ffffff; 
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.task-text {
+    word-break: break-word;
+    color: white;
 }
 
 .todo-item:last-child {
@@ -309,11 +389,24 @@ body, html {
     color: #ff4d4d;
 }
 
+/* Ensure the base state is truly collapsed */
 #project-input-group {
-    margin-top: 15px;
-    padding: 10px;
-    background: #e9ecef;
-    border-radius: 6px;
+    display: flex; 
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+    max-height: 0;   /* Start at zero height */
+    opacity: 0;      /* Start invisible */
+    padding: 0 10px; /* No vertical padding */
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+}
+
+/* This MUST be written exactly like this (no spaces) */
+#project-input-group.visible {
+    max-height: 200px; /* Adjust to fit your input + buttons */
+    opacity: 1;
+    padding: 15px 10px;
+    margin-bottom: 15px;
 }
 
 #new-project-name {
@@ -326,7 +419,7 @@ body, html {
 
 .empty-msg {
     text-align: center;
-    color: #888;
+    color: #ffffff;
     margin-top: 40px;
     font-style: italic;
     font-size: 0.9rem;

@@ -1,15 +1,17 @@
 
 export const projectInput = {
-    open(showBtn, inputGroup, inputField) {
-        showBtn.style.display = 'none';
-        inputGroup.style.display = 'block';
-        inputField.focus();
+    open: (showBtn, inputGroup, input) => {
+        inputGroup.classList.add('visible'); 
+        showBtn.style.display = 'none';      
+        setTimeout(() => input.focus(), 100); 
     },
-
-    close(showBtn, inputGroup, inputField) {
-        showBtn.style.display = 'block';
-        inputGroup.style.display = 'none';
-        inputField.value = '';
+    
+    close: (showBtn, inputGroup, input) => {
+        inputGroup.classList.remove('visible'); 
+        input.value = '';
+        setTimeout(() => {
+            showBtn.style.display = 'block';
+        }, 400);
     }
 };
 

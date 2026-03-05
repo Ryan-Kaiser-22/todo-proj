@@ -20,7 +20,6 @@
                 <a href="#" class="nav-link">Today</a>
                 <a href="#" class="nav-link">Upcoming</a>
                 <a href="#" class="nav-link">Anytime</a>
-                <a href="#" class="nav-link">Someday</a>
             </nav>
 
             <div class="projects-section">
@@ -29,7 +28,7 @@
                 
                 <div id="new-project-container">
                     <button id="show-add-project">+ New Project</button>
-                    <div id="project-input-group" style="display: none;">
+                    <div id="project-input-group">
                         <input type="text" id="new-project-name" placeholder="Project Name...">
                         <button id="confirm-add-project">Add</button>
                         <button id="cancel-add-project">Cancel</button>
@@ -53,6 +52,7 @@
             <section class="todo-form-container">
                 <form id="todo-form">
                     <input type="text" id="todo-input" placeholder="What needs to be done?" required>
+                    <input type="date" id="todo-date"> 
                     <button type="submit">Add Task</button>
                 </form>
             </section>

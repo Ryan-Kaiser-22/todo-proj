@@ -3,7 +3,7 @@ const STORAGE_KEY = 'todo_app_data';
 
 export let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
     'Inbox': [],
-    'Work': [{ title: 'Setup Webpack', completed: true }],
+    'Work': [],
     'Personal': []
 };
 
@@ -12,35 +12,70 @@ export function saveToLocalStorage() {
 }
 
 //Tasks
-export const createTask = (title, completed = false) => ({ 
+export const createTask = (title) => ({ 
     title, 
-    completed,
-    id: Date.now()
+    completed: false,
+    id: Date.now(),
+    dueDate: new Date().toISOString().split('T')[0] 
 });
 
-export function addTaskToProject(projectName, taskTitle) {
-    if (!projects[projectName]) return; 
-    
-    const newTask = createTask(taskTitle);
-    projects[projectName].push(newTask);
-    
-    saveToLocalStorage();
-    return projects[projectName];
+export function getFilteredTasks(filterType) {
+    const allTasks = Object.values(projects).flat();
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    if (filterType === 'Today') {
+        return allTasks.filter(task => task.dueDate === todayStr);
+    }
+    if (filterType === 'Upcoming') {
+        return allTasks.filter(task => task.dueDate > todayStr);
+    }
+    if (filterType === 'Anytime' || filterType === 'Someday') {
+        return allTasks; 
+    }
+    return [];
 }
 
-export function toggleTaskStatus(projectName, taskIndex) {
-    const task = projects[projectName][taskIndex];
+export function addTaskToProject(projectName, taskTitle, taskDate) {
+    if (!projects[projectName]) return; 
+    const date = taskDate || new Date().toISOString().split('T')[0];
+    const newTask = {
+        title: taskTitle,
+        completed: false,
+        id: Date.now(),
+        dueDate: date
+    };
+    
+    projects[projectName].push(newTask);
+    saveToLocalStorage();
+}
+
+export function toggleTaskStatus(projectName, taskId) {
+    const task = projects[projectName].find(t => t.id == taskId);
     if (task) {
         task.completed = !task.completed;
         saveToLocalStorage();
     }
 }
 
-export function deleteTask(projectName, taskIndex) {
+//This function is for normal deleting while in project view of tasks
+export function deleteTask(projectName, taskId) {
     if (projects[projectName]) {
-        projects[projectName].splice(taskIndex, 1); 
+        projects[projectName] = projects[projectName].filter(t => t.id != taskId);
         saveToLocalStorage();
         return true;
+    }
+    return false;
+}
+
+//This function is specific to using time filtered views of tasks
+export function deleteTaskGlobal(taskId) {
+    for (const projectName in projects) {
+        const initialLength = projects[projectName].length;
+        projects[projectName] = projects[projectName].filter(t => t.id != taskId);
+        if (projects[projectName].length !== initialLength) {
+            saveToLocalStorage();
+            return true;
+        }
     }
     return false;
 }

@@ -12,33 +12,45 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
-//Tasks
-export function renderTodos(currentProject) {
-    todoListUI.innerHTML = ''; 
-    viewTitle.textContent = currentProject;
-    const tasks = projects[currentProject] || [];
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${month}/${day}/${year}`;
+}
 
-    if (tasks.length === 0) {
-        const msg = document.createElement('p');
-        msg.className = 'empty-msg';
-        msg.textContent = 'No tasks yet! Add one above.';
-        todoListUI.appendChild(msg);
-        return;
-    }
+//Tasks
+export function renderTodos(title, tasksOverride) {
+    const todoListUI = document.getElementById('todo-list');
+    const viewTitle = document.getElementById('current-view-title');
+    
+    if (!todoListUI || !viewTitle) return; 
+
+    todoListUI.innerHTML = ''; 
+    viewTitle.textContent = title;
+    const tasks = tasksOverride || projects[title] || [];
 
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
         li.className = 'todo-item';
-        li.innerHTML = `
-            <div class="todo-content ${task.completed ? 'completed' : ''}">
+        
+        // Use the helper function here
+        const displayDate = formatDate(task.dueDate);
+
+       li.innerHTML = `
+            <div class="todo-main-content ${task.completed ? 'completed' : ''}">
                 <input type="checkbox" 
-                       ${task.completed ? 'checked' : ''} 
-                       data-index="${index}" 
-                       class="todo-checkbox">
+                    ${task.completed ? 'checked' : ''} 
+                    data-id="${task.id}" 
+                    class="todo-checkbox">
                 <span class="task-text"></span>
             </div>
-            <button class="delete-task-btn" data-index="${index}">×</button>
+            <div class="todo-meta">
+                <span class="task-date">Due: ${displayDate}</span>
+                <button class="delete-task-btn" data-id="${task.id}">×</button>
+            </div>
         `;
+        
+        // XSS Protection for the title
         li.querySelector('.task-text').textContent = task.title;
         todoListUI.appendChild(li);
     });

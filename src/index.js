@@ -18,11 +18,12 @@ const elements = {
     sidebar: document.querySelector('.sidebar'),
     todoListUI: document.getElementById('todo-list'),
     clearCompletedBtn: document.getElementById('clear-completed-btn'),
+    todoDate: document.getElementById('todo-date'),
 };
 
 //Dark mode
 const init = () => {
-    const theme = UI.theme.getStoredTheme();
+    const theme = UI.theme.getStored();
     document.documentElement.setAttribute('data-theme', theme);
     UI.theme.updateButton(elements.themeToggle, theme);
     renderSidebar();
@@ -58,20 +59,34 @@ elements.confirmProjectBtn.addEventListener('click', () => {
 });
 
 elements.sidebar.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.classList.contains('nav-link')) {
+        const viewName = target.textContent;
+        const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
+        if (timeFilters.includes(viewName)) {
+            currentProject = viewName;
+            const filteredList = Logic.getFilteredTasks(viewName); 
+            renderTodos(viewName, filteredList);
+            return; 
+        }
+        currentProject = viewName;
+        renderTodos(currentProject);
+        return;
+    }
 
-    if (e.target.matches('.nav-link, .project-item')) {
-        currentProject = e.target.textContent;
+    if (target.classList.contains('project-item')) {
+        currentProject = target.textContent;
         renderTodos(currentProject);
     }
-    //Clicking on a task will bring up that project
-    if (e.target.classList.contains('sub-task-item')) {
-        const projectHeader = e.target.closest('.project-nav-group').querySelector('.project-item');
+
+    if (target.classList.contains('sub-task-item')) {
+        const projectHeader = target.closest('.project-nav-group').querySelector('.project-item');
         currentProject = projectHeader.textContent;
         renderTodos(currentProject);
     }
 
-    if (e.target.classList.contains('delete-project-btn')) {
-        const projectToDelete = e.target.dataset.project;
+    if (target.classList.contains('delete-project-btn')) {
+        const projectToDelete = target.dataset.project;
         if (Logic.deleteProject(projectToDelete)) {
             if (currentProject === projectToDelete) currentProject = 'Inbox';
             renderSidebar();
@@ -83,31 +98,55 @@ elements.sidebar.addEventListener('click', (e) => {
 elements.todoForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const taskTitle = elements.todoInput.value.trim();
+    const taskDate = elements.todoDate.value; 
+    const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
+    
+    //if in one of the filter views use current, otherwise use Inbox
+    const projectToSaveTo = timeFilters.includes(currentProject) ? 'Inbox' : currentProject;
     if (taskTitle) {
-        Logic.addTaskToProject(currentProject, taskTitle);
+        Logic.addTaskToProject(projectToSaveTo, taskTitle, taskDate);
+        
         elements.todoInput.value = '';
-        renderTodos(currentProject);
+        elements.todoDate.value = ''; 
+        
+        if (timeFilters.includes(currentProject)) {
+            const filteredData = Logic.getFilteredTasks(currentProject);
+            renderTodos(currentProject, filteredData);
+        } else {
+            renderTodos(currentProject);
+        }
         renderSidebar(); 
     }
 });
 
 elements.todoListUI.addEventListener('click', (e) => {
-    const index = e.target.dataset.index;
-    if (!index) return;
+    const taskId = e.target.dataset.id;
+    if (!taskId) return;
 
     if (e.target.classList.contains('todo-checkbox')) {
-        Logic.toggleTaskStatus(currentProject, index);
-        renderTodos(currentProject);
+        Logic.toggleTaskStatus(currentProject, taskId);
+        refreshUI();
     }
 
     if (e.target.classList.contains('delete-task-btn')) {
-        Logic.deleteTask(currentProject, index);
-        renderTodos(currentProject);
-        renderSidebar(); 
+        Logic.deleteTask(currentProject, taskId);
+        refreshUI();
     }
 });
 
+
+function refreshUI() {
+    renderTodos(currentProject);
+    renderSidebar();
+}
+
 elements.clearCompletedBtn.addEventListener('click', () => {
+    const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
+    if (timeFilters.includes(currentProject)) {
+        alert("Please select a specific project (like Inbox or Work) to clear completed tasks.");
+        return;
+    }
+
     Logic.clearCompletedTasks(currentProject);
     renderTodos(currentProject);
     renderSidebar();
