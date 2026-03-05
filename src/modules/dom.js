@@ -1,4 +1,4 @@
-
+import * as Logic from './logic';
 import { projects } from './logic';
 
 const todoListUI = document.getElementById('todo-list');
@@ -33,7 +33,6 @@ export function renderTodos(title, tasksOverride) {
         const li = document.createElement('li');
         li.className = 'todo-item';
         
-        // Use the helper function here
         const displayDate = formatDate(task.dueDate);
 
        li.innerHTML = `
@@ -58,6 +57,21 @@ export function renderTodos(title, tasksOverride) {
 
 //Sidebar
 export function renderSidebar() {
+    const fixedViews = ['Inbox', 'Today', 'Upcoming', 'Anytime'];
+    
+    fixedViews.forEach(view => {
+        const badge = document.getElementById(`count-${view}`);
+        if (badge) {
+            // Get the count from Logic
+            const count = (view === 'Inbox') 
+                ? projects['Inbox'].filter(t => !t.completed).length 
+                : Logic.getFilteredTasks(view).filter(t => !t.completed).length;
+            
+            badge.textContent = count;
+            // Hide bubble if count is 0
+            badge.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+    });
     projectListUI.innerHTML = ''; 
 
     Object.keys(projects).forEach(projectName => {
@@ -72,7 +86,7 @@ export function renderSidebar() {
         const projectHeader = `
             <div class="project-header">
                 <div class="project-info">
-                    <span class="project-item bold-text">${safeProjectName}</span>
+                    <span class="project-item bold-text" title="${safeProjectName}">${safeProjectName}</span>
                     <span class="task-count">${taskCount}</span>
                 </div>
                 <button class="delete-project-btn" data-project="${safeProjectName}">×</button>

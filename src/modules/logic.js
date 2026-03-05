@@ -12,12 +12,20 @@ export function saveToLocalStorage() {
 }
 
 //Tasks
-export const createTask = (title) => ({ 
+//Factory function to instantiate new tasks
+export const createTask = (title, date) => ({ 
     title, 
     completed: false,
     id: Date.now(),
-    dueDate: new Date().toISOString().split('T')[0] 
+    dueDate: date || new Date().toISOString().split('T')[0] 
 });
+
+export function addTaskToProject(projectName, taskTitle, taskDate) {
+    if (!projects[projectName]) return; 
+    const newTask = createTask(taskTitle, taskDate);
+    projects[projectName].push(newTask);
+    saveToLocalStorage();
+}
 
 export function getFilteredTasks(filterType) {
     const allTasks = Object.values(projects).flat();
@@ -33,20 +41,6 @@ export function getFilteredTasks(filterType) {
         return allTasks; 
     }
     return [];
-}
-
-export function addTaskToProject(projectName, taskTitle, taskDate) {
-    if (!projects[projectName]) return; 
-    const date = taskDate || new Date().toISOString().split('T')[0];
-    const newTask = {
-        title: taskTitle,
-        completed: false,
-        id: Date.now(),
-        dueDate: date
-    };
-    
-    projects[projectName].push(newTask);
-    saveToLocalStorage();
 }
 
 export function toggleTaskStatus(projectName, taskId) {

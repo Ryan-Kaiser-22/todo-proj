@@ -72,15 +72,17 @@ elements.confirmProjectBtn.addEventListener('click', () => {
 
 elements.sidebar.addEventListener('click', (e) => {
     const target = e.target;
-    
-    if (target.classList.contains('nav-link')) {
-        currentProject = target.textContent;
+    //Bubble up when clicking bubble.. chortle. 
+    const navLink = target.closest('.nav-link');
+    if (navLink) {
+        currentProject = navLink.querySelector('span').textContent;
         refreshUI();
         return;
     }
-
-    if (target.classList.contains('project-item')) {
-        currentProject = target.textContent;
+    //Bubble bubble 
+    const projectItem = target.closest('.project-item');
+    if (projectItem) {
+        currentProject = projectItem.textContent;
         refreshUI();
     }
 
@@ -92,10 +94,13 @@ elements.sidebar.addEventListener('click', (e) => {
 
     if (target.classList.contains('delete-project-btn')) {
         const projectToDelete = target.dataset.project;
-        if (Logic.deleteProject(projectToDelete)) {
-            if (currentProject === projectToDelete) currentProject = 'Inbox';
-            refreshUI();
-        }
+        const userConfirmed = confirm(`Are you sure you want to delete "${projectToDelete}"? This will remove all tasks inside it.`);
+        if (userConfirmed) {   
+            if (Logic.deleteProject(projectToDelete)) {
+                if (currentProject === projectToDelete) currentProject = 'Inbox';
+                refreshUI();
+            }
+        }   
     }
 });
 
