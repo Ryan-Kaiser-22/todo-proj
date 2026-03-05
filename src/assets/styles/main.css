@@ -274,7 +274,7 @@ body, html {
     border-radius: 6px;
     font-size: 0.95rem;
     font-family: inherit;
-    border: 1px solid #3e4042;
+    border: 1px solid #ccc;
 }
 
 #todo-input {
@@ -289,11 +289,14 @@ body, html {
     width: auto; 
 }
 
+#todo-date:hover {
+    background-color: #3a3b3c; 
+}
+
 #todo-form button, #confirm-add-project, #cancel-add-project {
     background-color: #4da3ff; 
     color: white;
     font-weight: 600;
-    border: none;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
     white-space: nowrap; 
@@ -347,13 +350,13 @@ body, html {
 #todo-input {
     width: 70%;
     padding: 12px;
-    border: 1px solid #ccc;
     border-radius: 6px;
     outline: none;
 }
 
 #todo-input:focus {
-    border-color: #007bff;
+    border-color: var(--accent-color);
+    outline: none;
 }
 
 .todo-display {
@@ -533,6 +536,11 @@ body, html {
     margin-top: 40px;
     font-style: italic;
     font-size: 0.9rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); 
+    cursor: pointer;
 }
 
 .theme-toggle-container {
