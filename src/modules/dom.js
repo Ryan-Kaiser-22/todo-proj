@@ -32,6 +32,7 @@ export function renderTodos(title, tasksOverride) {
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
         li.className = 'todo-item';
+        li.setAttribute('data-id', task.id);
         
         const displayDate = formatDate(task.dueDate);
 
@@ -45,6 +46,7 @@ export function renderTodos(title, tasksOverride) {
             </div>
             <div class="todo-meta">
                 <span class="task-date">Due: ${displayDate}</span>
+                <button class="edit-task-btn" data-id="${task.id}">✎</button>
                 <button class="delete-task-btn" data-id="${task.id}">×</button>
             </div>
         `;
@@ -104,4 +106,27 @@ export function renderSidebar() {
         projectContainer.innerHTML = projectHeader + taskSubTree;
         projectListUI.appendChild(projectContainer);
     });
+}
+
+//Edit task function
+export function showEditForm(liElement, task) {
+    const projectOptions = Object.keys(projects).map(projectName => `
+        <option value="${projectName}" ${projectName === task.project ? 'selected' : ''}>
+            ${projectName}
+        </option>
+    `).join('');
+
+    liElement.innerHTML = `
+        <div class="edit-form-inline">
+            <input type="text" class="edit-title" value="${task.title}">
+            <input type="date" class="edit-date" value="${task.dueDate}">
+            <select class="edit-project">
+                ${projectOptions}
+            </select>
+            <div class="edit-buttons">
+                <button class="save-edit-btn" data-id="${task.id}">Save</button>
+                <button class="cancel-edit-btn">Cancel</button>
+            </div>
+        </div>
+    `;
 }

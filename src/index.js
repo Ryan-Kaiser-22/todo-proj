@@ -2,6 +2,7 @@ import './assets/styles/main.css';
 import { renderTodos, renderSidebar } from './modules/dom';
 import * as Logic from './modules/logic';
 import * as UI from './modules/ui';
+import * as DOM from './modules/dom';
 
 //Default state 
 let currentProject = 'Inbox';
@@ -121,15 +122,50 @@ elements.todoForm.addEventListener('submit', (e) => {
 });
 
 elements.todoListUI.addEventListener('click', (e) => {
-    const taskId = e.target.dataset.id;
+    const target = e.target;
+    const li = target.closest('.todo-item');
+    if (!li) return;
+
+    const taskId = target.dataset.id || li.getAttribute('data-id');
     if (!taskId) return;
 
-    if (e.target.classList.contains('todo-checkbox')) {
+    if (target.classList.contains('edit-task-btn')) {
+        const task = Logic.getTaskById(taskId);
+        if (task) {
+            DOM.showEditForm(li, task);
+        }
+        return;
+    }
+
+    if (target.classList.contains('save-edit-btn')) {
+        const newTitle = li.querySelector('.edit-title').value.trim();
+        const newDate = li.querySelector('.edit-date').value;
+        const newProject = li.querySelector('.edit-project').value;
+
+        if (newTitle) {
+            Logic.updateTask(taskId, {
+                title: newTitle,
+                dueDate: newDate,
+                project: newProject
+            });
+            refreshUI();
+        } else {
+            alert("Task title cannot be empty!");
+        }
+        return;
+    }
+
+    if (target.classList.contains('cancel-edit-btn')) {
+        refreshUI(); 
+        return;
+    }
+
+    if (target.classList.contains('todo-checkbox')) {
         Logic.toggleTaskStatusGlobal(taskId);
         refreshUI(); 
     }
 
-    if (e.target.classList.contains('delete-task-btn')) {
+    if (target.classList.contains('delete-task-btn')) {
         Logic.deleteTaskGlobal(taskId);
         refreshUI(); 
     }

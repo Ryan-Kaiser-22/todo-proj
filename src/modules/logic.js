@@ -111,3 +111,39 @@ export function deleteProject(projectName) {
     }
     return false;
 }
+
+//Edit task
+export function getTaskById(id) {
+    for (const project in projects) {
+        const task = projects[project].find(t => t.id == id);
+        if (task) return task;
+    }
+    return null;
+}
+
+export function updateTask(id, newData) {
+    let currentProjectName = '';
+    let taskIndex = -1;
+
+    for (const name in projects) {
+        taskIndex = projects[name].findIndex(t => t.id == id);
+        if (taskIndex !== -1) {
+            currentProjectName = name;
+            break;
+        }
+    }
+
+    if (taskIndex === -1) return;
+
+    const task = projects[currentProjectName][taskIndex];
+    const updatedTask = { ...task, ...newData };
+
+    if (newData.project && newData.project !== currentProjectName) {
+        projects[currentProjectName].splice(taskIndex, 1);
+        projects[newData.project].push(updatedTask);
+    } else {
+        projects[currentProjectName][taskIndex] = updatedTask;
+    }
+
+    saveToLocalStorage(); 
+}
