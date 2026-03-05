@@ -38,7 +38,10 @@ const refreshUI = () => {
 const init = () => {
     const theme = UI.theme.getStored();
     document.documentElement.setAttribute('data-theme', theme);
-    UI.theme.updateButton(elements.themeToggle, theme);
+    
+    const iconName = theme === 'light' ? 'dark_mode' : 'light_mode';
+    elements.themeToggle.innerHTML = `<span class="material-symbols-outlined">${iconName}</span>`;
+    
     renderSidebar();
     renderTodos(currentProject);
 };
@@ -49,7 +52,8 @@ elements.themeToggle.addEventListener('click', () => {
     
     document.documentElement.setAttribute('data-theme', newTheme);
     UI.theme.save(newTheme);
-    UI.theme.updateButton(elements.themeToggle, newTheme);
+    const iconName = newTheme === 'light' ? 'dark_mode' : 'light_mode';
+    elements.themeToggle.innerHTML = `<span class="material-symbols-outlined">${iconName}</span>`;
 });
 
 //Listeners
