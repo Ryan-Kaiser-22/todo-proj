@@ -57,6 +57,18 @@ export function toggleTaskStatus(projectName, taskId) {
     }
 }
 
+export function toggleTaskStatusGlobal(taskId) {
+    for (const projectName in projects) {
+        const task = projects[projectName].find(t => t.id == taskId);
+        if (task) {
+            task.completed = !task.completed;
+            saveToLocalStorage();
+            return true;
+        }
+    }
+    return false;
+}
+
 //This function is for normal deleting while in project view of tasks
 export function deleteTask(projectName, taskId) {
     if (projects[projectName]) {

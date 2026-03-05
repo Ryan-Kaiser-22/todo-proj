@@ -376,6 +376,12 @@ body, html {
     cursor: pointer;
 }
 
+.sidebar-task-completed {
+    text-decoration: line-through;
+    opacity: 0.5;
+    font-style: italic;
+}
+
 .delete-task-btn {
     background: none;
     border: none;
@@ -389,21 +395,19 @@ body, html {
     color: #ff4d4d;
 }
 
-/* Ensure the base state is truly collapsed */
 #project-input-group {
     display: flex; 
     flex-direction: column;
     gap: 8px;
     overflow: hidden;
-    max-height: 0;   /* Start at zero height */
-    opacity: 0;      /* Start invisible */
-    padding: 0 10px; /* No vertical padding */
+    max-height: 0; 
+    opacity: 0;      
+    padding: 0 10px; 
     transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
 }
 
-/* This MUST be written exactly like this (no spaces) */
 #project-input-group.visible {
-    max-height: 200px; /* Adjust to fit your input + buttons */
+    max-height: 200px; 
     opacity: 1;
     padding: 15px 10px;
     margin-bottom: 15px;

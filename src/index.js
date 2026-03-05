@@ -21,6 +21,18 @@ const elements = {
     todoDate: document.getElementById('todo-date'),
 };
 
+const refreshUI = () => {
+    const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
+    
+    if (timeFilters.includes(currentProject)) {
+        const filteredData = Logic.getFilteredTasks(currentProject);
+        renderTodos(currentProject, filteredData);
+    } else {
+        renderTodos(currentProject);
+    }
+    renderSidebar();
+};
+
 //Dark mode
 const init = () => {
     const theme = UI.theme.getStored();
@@ -51,46 +63,38 @@ elements.cancelProjectBtn.addEventListener('click', () => {
 elements.confirmProjectBtn.addEventListener('click', () => {
     const name = elements.projectNameInput.value.trim();
     if (Logic.addProject(name)) {
-        renderSidebar();
+        refreshUI();
         UI.projectInput.close(elements.showBtn, elements.inputGroup, elements.projectNameInput);
     } else {
-        alert("Project name must be unique and not empty!");
+        alert("Project requires a new name!");
     }
 });
 
 elements.sidebar.addEventListener('click', (e) => {
     const target = e.target;
+    
     if (target.classList.contains('nav-link')) {
-        const viewName = target.textContent;
-        const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
-        if (timeFilters.includes(viewName)) {
-            currentProject = viewName;
-            const filteredList = Logic.getFilteredTasks(viewName); 
-            renderTodos(viewName, filteredList);
-            return; 
-        }
-        currentProject = viewName;
-        renderTodos(currentProject);
+        currentProject = target.textContent;
+        refreshUI();
         return;
     }
 
     if (target.classList.contains('project-item')) {
         currentProject = target.textContent;
-        renderTodos(currentProject);
+        refreshUI();
     }
 
     if (target.classList.contains('sub-task-item')) {
         const projectHeader = target.closest('.project-nav-group').querySelector('.project-item');
         currentProject = projectHeader.textContent;
-        renderTodos(currentProject);
+        refreshUI();
     }
 
     if (target.classList.contains('delete-project-btn')) {
         const projectToDelete = target.dataset.project;
         if (Logic.deleteProject(projectToDelete)) {
             if (currentProject === projectToDelete) currentProject = 'Inbox';
-            renderSidebar();
-            renderTodos(currentProject);
+            refreshUI();
         }
     }
 });
@@ -101,21 +105,13 @@ elements.todoForm.addEventListener('submit', (e) => {
     const taskDate = elements.todoDate.value; 
     const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
     
-    //if in one of the filter views use current, otherwise use Inbox
     const projectToSaveTo = timeFilters.includes(currentProject) ? 'Inbox' : currentProject;
+    
     if (taskTitle) {
         Logic.addTaskToProject(projectToSaveTo, taskTitle, taskDate);
-        
         elements.todoInput.value = '';
         elements.todoDate.value = ''; 
-        
-        if (timeFilters.includes(currentProject)) {
-            const filteredData = Logic.getFilteredTasks(currentProject);
-            renderTodos(currentProject, filteredData);
-        } else {
-            renderTodos(currentProject);
-        }
-        renderSidebar(); 
+        refreshUI(); //
     }
 });
 
@@ -124,21 +120,15 @@ elements.todoListUI.addEventListener('click', (e) => {
     if (!taskId) return;
 
     if (e.target.classList.contains('todo-checkbox')) {
-        Logic.toggleTaskStatus(currentProject, taskId);
-        refreshUI();
+        Logic.toggleTaskStatusGlobal(taskId);
+        refreshUI(); 
     }
 
     if (e.target.classList.contains('delete-task-btn')) {
-        Logic.deleteTask(currentProject, taskId);
-        refreshUI();
+        Logic.deleteTaskGlobal(taskId);
+        refreshUI(); 
     }
 });
-
-
-function refreshUI() {
-    renderTodos(currentProject);
-    renderSidebar();
-}
 
 elements.clearCompletedBtn.addEventListener('click', () => {
     const timeFilters = ['Today', 'Upcoming', 'Anytime', 'Someday'];
@@ -148,8 +138,7 @@ elements.clearCompletedBtn.addEventListener('click', () => {
     }
 
     Logic.clearCompletedTasks(currentProject);
-    renderTodos(currentProject);
-    renderSidebar();
+    refreshUI();
 });
 
 init();

@@ -82,7 +82,8 @@ export function renderSidebar() {
         let taskSubTree = '<ul class="sub-task-list">';
         tasks.forEach(task => {
             const safeTaskTitle = escapeHTML(task.title);
-            taskSubTree += `<li class="sub-task-item">${safeTaskTitle}</li>`;
+            const completedClass = task.completed ? 'sidebar-task-completed' : '';
+            taskSubTree += `<li class="sub-task-item ${completedClass}">${safeTaskTitle}</li>`;
         });
         taskSubTree += '</ul>';
 
