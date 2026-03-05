@@ -4,7 +4,7 @@ import * as Logic from './modules/logic';
 import * as UI from './modules/ui';
 import * as DOM from './modules/dom';
 
-//Default state 
+//Default task bin 
 let currentProject = 'Inbox';
 
 const elements = {

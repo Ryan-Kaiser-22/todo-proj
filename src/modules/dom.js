@@ -46,7 +46,9 @@ export function renderTodos(title, tasksOverride) {
             </div>
             <div class="todo-meta">
                 <span class="task-date">Due: ${displayDate}</span>
-                <button class="edit-task-btn" data-id="${task.id}">✎</button>
+                <button class="edit-task-btn" data-id="${task.id}">
+                    <span class="material-symbols-outlined">edit</span>
+                </button>
                 <button class="delete-task-btn" data-id="${task.id}">×</button>
             </div>
         `;
@@ -64,13 +66,11 @@ export function renderSidebar() {
     fixedViews.forEach(view => {
         const badge = document.getElementById(`count-${view}`);
         if (badge) {
-            // Get the count from Logic
             const count = (view === 'Inbox') 
                 ? projects['Inbox'].filter(t => !t.completed).length 
                 : Logic.getFilteredTasks(view).filter(t => !t.completed).length;
             
             badge.textContent = count;
-            // Hide bubble if count is 0
             badge.style.display = count > 0 ? 'inline-block' : 'none';
         }
     });
