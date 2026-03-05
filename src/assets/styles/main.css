@@ -42,15 +42,21 @@ body, html {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: 20px;
+    padding: 20px 5px 20px 20px;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
     position: sticky;
     top: 0;
-    width: 260px;       
-    min-width: 260px;     
-    max-width: 260px;
+    width: 280px;       
+    min-width: 280px;     
+    max-width: 280px;
     overflow-x: hidden;
+}
+
+.sidebar-footer {
+    margin-top: auto; 
+    padding: 20px 30px;
+    border-top: 1px solid var(--border-color);
 }
 
 .inbox-link {
@@ -94,12 +100,6 @@ body, html {
     overflow-y: auto; 
 }
 
-.sidebar-footer {
-    margin-top: auto; 
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-}
-
 .secondary-btn {
     width: 100%;
     background: transparent;
@@ -121,15 +121,15 @@ body, html {
 #clear-completed-btn {
     width: 100%; 
     padding: 10px;
-    text-align: left;
     background: transparent;
-    border: none;
+    border: 1px dashed var(--border-color);
     color: var(--text-color);
     opacity: 0.6;
     cursor: pointer;
     font-size: 0.9rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 
@@ -218,8 +218,6 @@ body, html {
     cursor: pointer;
     color: var(--accent-color);
 }
-
-
 
 .task-count {
     background-color: var(--border-color); 
